@@ -6,10 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,21 +33,29 @@ fun InstagramCard() {
 
 @Composable
 fun HeaderCard(subInfoList: List<Pair<String, String>>) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(all = 8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+    Card(
+        shape = RoundedCornerShape(
+            topStart = 8.dp,
+            topEnd = 8.dp
+        ),
+        colors = CardDefaults.cardColors(Color.White)
     ) {
-        Box(
-            modifier = Modifier,
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "test")
-        }
+            Box(
+                modifier = Modifier,
+            ) {
+                Text(text = "test")
+            }
 
-        subInfoList.forEach {
-            SubsInfo(countString = it.first, name = it.second)
+            subInfoList.forEach {
+                SubsInfo(countString = it.first, name = it.second)
+            }
         }
     }
 }
