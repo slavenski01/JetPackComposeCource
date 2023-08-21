@@ -16,6 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,14 +75,19 @@ private fun SubsInfo(countString: String, name: String) {
         Box(
             modifier = Modifier,
         ) {
-            Text(text = countString)
+            Text(
+                text = countString,
+                fontSize = 24.sp,
+                fontFamily = FontFamily.Cursive
+            )
         }
         Box(
             modifier = Modifier,
         ) {
             Text(
                 text = name,
-                fontSize = 8.sp
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
