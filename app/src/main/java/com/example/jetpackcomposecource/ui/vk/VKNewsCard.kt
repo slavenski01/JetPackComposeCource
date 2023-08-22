@@ -2,10 +2,10 @@ package com.example.jetpackcomposecource.ui.vk
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,6 +47,7 @@ fun VKCard() {
     ) {
         VKHeader()
         VKBody()
+        VKFooter()
     }
 }
 
@@ -96,7 +97,7 @@ fun VKHeader() {
 
 @Composable
 fun VKBody() {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+    Column(modifier = Modifier.padding(all = 8.dp)) {
         Text(
             text = "кабаныч, когда узнал, что " +
                     "если сотрудникам не платить",
@@ -114,7 +115,56 @@ fun VKBody() {
 
 @Composable
 fun VKFooter() {
+    Row(
+        modifier = Modifier
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        listOf(
+            Pair(
+                R.drawable.ic_launcher_foreground,
+                960
+            ),
+            Pair(
+                R.drawable.ic_launcher_foreground,
+                7
+            ),
+            Pair(
+                R.drawable.ic_launcher_foreground,
+                8
+            ),
+            Pair(
+                R.drawable.ic_launcher_foreground,
+                23
+            ),
+        ).forEachIndexed { index, item ->
+            VKBadge(
+                modifier = if (index == 0) Modifier.weight(1f) else Modifier,
+                iconRes = item.first,
+                count = item.second
+            )
+        }
+    }
+}
 
+@Composable
+fun VKBadge(
+    modifier: Modifier = Modifier,
+    iconRes: Int,
+    count: Int
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            modifier = Modifier.size(25.dp),
+            painter = painterResource(id = iconRes),
+            contentDescription = ""
+        )
+        Text(text = count.toString())
+    }
 }
 
 @Preview
@@ -124,6 +174,6 @@ fun Test() {
         dynamicColor = false,
         darkTheme = true
     ) {
-        VKCard()
+        VKFooter()
     }
 }
