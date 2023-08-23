@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.jetpackcomposecource.ui.test.Example1
+import com.example.jetpackcomposecource.ui.test.Example2
 import com.example.jetpackcomposecource.ui.theme.JetPackComposeCourceTheme
 import com.example.jetpackcomposecource.ui.vk.VKCard
 
@@ -20,13 +22,7 @@ class MainActivity : ComponentActivity() {
             JetPackComposeCourceTheme(
                 dynamicColor = false
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                ) {
-                    VKCard()
-                }
+                Example2()
             }
         }
     }
@@ -41,9 +37,8 @@ fun Test() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
         ) {
-            VKCard()
+            Example2()
         }
     }
 }
