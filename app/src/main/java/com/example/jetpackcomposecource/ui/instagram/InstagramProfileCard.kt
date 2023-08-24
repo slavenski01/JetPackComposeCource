@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,59 +27,57 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcomposecource.R
-import com.example.jetpackcomposecource.ui.theme.JetPackComposeCourceTheme
+import com.example.jetpackcomposecource.viewmodel.MainViewModel
 
 @Composable
-fun InstagramCard() {
+fun InstagramCard(viewModel: MainViewModel) {
+
+    val isFollowed = viewModel.isFollowing.observeAsState(false)
+
     Column {
-        ProfileCard(
-            subInfoList = listOf(
-                Pair("6,950", "Posts"),
-                Pair("436M", "Followers"),
-                Pair("76", "Following"),
-            )
+        val subInfoList = listOf(
+            Pair("6,950", "Posts"),
+            Pair("436M", "Followers"),
+            Pair("76", "Following"),
         )
-    }
-}
-
-@Composable
-fun ProfileCard(subInfoList: List<Pair<String, String>>) {
-    Card(
-        shape = RoundedCornerShape(
-            topStart = 8.dp,
-            topEnd = 8.dp
-        ),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Card(
+            shape = RoundedCornerShape(
+                topStart = 8.dp,
+                topEnd = 8.dp
+            ),
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Image(
+                Row(
                     modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape)
-                        .background(Color.White)
-                        .padding(8.dp),
-                    painter = painterResource(id = R.drawable.ic_instagram_logo),
-                    contentDescription = ""
-                )
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                            .padding(8.dp),
+                        painter = painterResource(id = R.drawable.ic_instagram_logo),
+                        contentDescription = ""
+                    )
 
-                subInfoList.forEach {
-                    SubsInfo(countString = it.first, name = it.second)
+                    subInfoList.forEach {
+                        SubsInfo(countString = it.first, name = it.second)
+                    }
+                }
+                BodyCard(isFollowed = isFollowed.value) {
+                    viewModel.changeFollowingStatus()
                 }
             }
-            BodyCard()
         }
     }
 }
@@ -106,7 +106,10 @@ private fun SubsInfo(countString: String, name: String) {
 }
 
 @Composable
-fun BodyCard() {
+private fun BodyCard(
+    isFollowed: Boolean,
+    clickListener: () -> Unit
+) {
     Column {
         Text(
             text = "Instagram",
@@ -117,31 +120,31 @@ fun BodyCard() {
             text = "#YoursToMake"
         )
         Text(text = "www.facebook.com")
-        Button(
-            onClick = { },
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(text = "Follow")
+        FollowButton(isFollowed = isFollowed) {
+            clickListener()
         }
     }
 }
 
-@Preview
 @Composable
-fun InstagramDarkPreview() {
-    JetPackComposeCourceTheme(
-        darkTheme = true
+private fun FollowButton(
+    isFollowed: Boolean,
+    clickListener: () -> Unit
+) {
+    Button(
+        onClick = { clickListener() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isFollowed) {
+                MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.5f
+                )
+            } else {
+                MaterialTheme.colorScheme.primary
+            }
+        ),
+        shape = RoundedCornerShape(8.dp)
     ) {
-        InstagramCard()
-    }
-}
-
-@Preview
-@Composable
-fun InstagramLightPreview() {
-    JetPackComposeCourceTheme(
-        darkTheme = false
-    ) {
-        InstagramCard()
+        val text = if (isFollowed) "unfollow" else "follow"
+        Text(text = text)
     }
 }
