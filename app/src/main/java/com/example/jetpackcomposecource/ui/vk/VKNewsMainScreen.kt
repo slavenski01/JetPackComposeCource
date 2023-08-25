@@ -15,23 +15,30 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.jetpackcomposecource.R
+import com.example.jetpackcomposecource.domain.FeedNews
+import com.example.jetpackcomposecource.domain.StatisticItem
+import com.example.jetpackcomposecource.domain.StatisticType
+import com.example.jetpackcomposecource.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    viewModel: MainViewModel
+) {
     val snackBarHostState = SnackbarHostState()
     val scope = rememberCoroutineScope()
-    val fabIsVisible = remember {
-        mutableStateOf(true)
-    }
+    val fabIsVisible = remember { mutableStateOf(true) }
+
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -86,5 +93,21 @@ fun MainScreen() {
             SnackbarHost(hostState = snackBarHostState)
         }
     ) {
+        val feedNews = viewModel.feedNews.observeAsState(FeedNews())
+        VKCard(
+            feedNews = feedNews.value,
+            onViewsClickListener = {
+                viewModel.updateCount(it)
+            },
+            onCommentClickListener = {
+                viewModel.updateCount(it)
+            },
+            onShareClickListener = {
+                viewModel.updateCount(it)
+            },
+            onLikeClickListener = {
+                viewModel.updateCount(it)
+            },
+        )
     }
 }

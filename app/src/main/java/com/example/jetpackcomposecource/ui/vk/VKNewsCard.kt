@@ -2,6 +2,7 @@ package com.example.jetpackcomposecource.ui.vk
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,28 +32,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcomposecource.R
+import com.example.jetpackcomposecource.domain.FeedNews
+import com.example.jetpackcomposecource.domain.StatisticItem
+import com.example.jetpackcomposecource.domain.StatisticType
 import com.example.jetpackcomposecource.ui.theme.JetPackComposeCourceTheme
 
-@Preview
 @Composable
-fun VKCard() {
+fun VKCard(
+    feedNews: FeedNews,
+    onViewsClickListener: (StatisticItem) -> Unit,
+    onShareClickListener: (StatisticItem) -> Unit,
+    onCommentClickListener: (StatisticItem) -> Unit,
+    onLikeClickListener: (StatisticItem) -> Unit
+) {
     Card(
         modifier = Modifier
-            .padding(6.dp),
+            .padding(8.dp),
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.background
         ),
         border = BorderStroke(0.1.dp, Color.Black),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        VKHeader()
-        VKBody()
-        VKFooter()
+        VKHeader(feedNews = feedNews)
+        VKBody(feedNews = feedNews)
+        VKFooter(
+            statistics = feedNews.statistics,
+            onLikeClickListener = onLikeClickListener,
+            onCommentClickListener = onCommentClickListener,
+            onShareClickListener = onShareClickListener,
+            onViewsClickListener = onViewsClickListener
+        )
     }
 }
 
 @Composable
-fun VKHeader() {
+private fun VKHeader(
+    feedNews: FeedNews
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,14 +88,14 @@ fun VKHeader() {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "уволено",
+                text = feedNews.communityName,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "14:00",
+                text = feedNews.publicationDate,
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSecondary
             )
@@ -96,11 +113,10 @@ fun VKHeader() {
 }
 
 @Composable
-fun VKBody() {
+private fun VKBody(feedNews: FeedNews) {
     Column(modifier = Modifier.padding(all = 8.dp)) {
         Text(
-            text = "кабаныч, когда узнал, что " +
-                    "если сотрудникам не платить",
+            text = feedNews.contentText,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold
         )
@@ -114,66 +130,87 @@ fun VKBody() {
 }
 
 @Composable
-fun VKFooter() {
+private fun VKFooter(
+    statistics: List<StatisticItem>,
+    onViewsClickListener: (StatisticItem) -> Unit,
+    onShareClickListener: (StatisticItem) -> Unit,
+    onCommentClickListener: (StatisticItem) -> Unit,
+    onLikeClickListener: (StatisticItem) -> Unit
+) {
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        listOf(
-            Pair(
-                R.drawable.ic_launcher_foreground,
-                960
-            ),
-            Pair(
-                R.drawable.ic_launcher_foreground,
-                7
-            ),
-            Pair(
-                R.drawable.ic_launcher_foreground,
-                8
-            ),
-            Pair(
-                R.drawable.ic_launcher_foreground,
-                23
-            ),
-        ).forEachIndexed { index, item ->
-            VKBadge(
-                modifier = if (index == 0) Modifier.weight(1f) else Modifier,
-                iconRes = item.first,
-                count = item.second
-            )
-        }
+        val viewsItem = statistics.getItemByType(StatisticType.VIEWS)
+        VKBadge(
+            modifier = Modifier.weight(1f),
+            iconRes = R.drawable.ic_views,
+            count = viewsItem.count,
+            onItemClickListener = {
+                onViewsClickListener(viewsItem)
+            }
+        )
+
+        val sharesItem = statistics.getItemByType(StatisticType.SHARES)
+        VKBadge(
+            iconRes = R.drawable.ic_share,
+            count = sharesItem.count,
+            onItemClickListener = {
+                onShareClickListener(sharesItem)
+            }
+        )
+
+        val commentItem = statistics.getItemByType(StatisticType.COMMENTS)
+        VKBadge(
+            iconRes = R.drawable.ic_comments,
+            count = commentItem.count,
+            onItemClickListener = {
+                onCommentClickListener(commentItem)
+            }
+        )
+
+        val likesItem = statistics.getItemByType(StatisticType.LIKES)
+        VKBadge(
+            iconRes = R.drawable.ic_like,
+            count = likesItem.count,
+            onItemClickListener = {
+                onLikeClickListener(likesItem)
+            }
+        )
+
     }
 }
 
+private fun List<StatisticItem>.getItemByType(type: StatisticType) =
+    this.find { it.type == type } ?: throw IllegalStateException()
+
 @Composable
-fun VKBadge(
+private fun VKBadge(
     modifier: Modifier = Modifier,
     iconRes: Int,
-    count: Int
+    count: Int,
+    onItemClickListener: () -> Unit
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .clickable {
+                onItemClickListener()
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            modifier = Modifier.size(25.dp),
-            painter = painterResource(id = iconRes),
+            modifier = Modifier
+                .size(40.dp)
+                .padding(8.dp),
+            painter = painterResource(iconRes),
             contentDescription = ""
         )
-        Text(text = count.toString())
-    }
-}
-
-@Preview
-@Composable
-fun Test() {
-    JetPackComposeCourceTheme(
-        dynamicColor = false,
-        darkTheme = true
-    ) {
-        VKFooter()
+        Text(
+            modifier = modifier.padding(4.dp),
+            text = count.toString()
+        )
     }
 }
