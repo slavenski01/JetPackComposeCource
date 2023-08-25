@@ -37,7 +37,9 @@ fun InstagramCard(viewModel: MainViewModel) {
 
     val isFollowed = viewModel.isFollowing.observeAsState(false)
 
-    Column {
+    Column(
+        modifier = Modifier.padding(8.dp)
+    ) {
         val subInfoList = listOf(
             Pair("6,950", "Posts"),
             Pair("436M", "Followers"),
