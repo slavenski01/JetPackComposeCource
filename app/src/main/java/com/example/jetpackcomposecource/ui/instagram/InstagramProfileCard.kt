@@ -19,7 +19,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,12 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcomposecource.R
-import com.example.jetpackcomposecource.viewmodel.MainViewModel
+import com.example.jetpackcomposecource.domain.InstagramModel
 
 @Composable
-fun InstagramCard(viewModel: MainViewModel) {
-
-    val isFollowed = viewModel.isFollowing.observeAsState(false)
+fun InstagramCard(
+    model: InstagramModel,
+    onIsFollowedClick: (InstagramModel) -> Unit
+) {
 
     Column(
         modifier = Modifier.padding(8.dp)
@@ -76,8 +76,8 @@ fun InstagramCard(viewModel: MainViewModel) {
                         SubsInfo(countString = it.first, name = it.second)
                     }
                 }
-                BodyCard(isFollowed = isFollowed.value) {
-                    viewModel.changeFollowingStatus()
+                BodyCard(model = model) {
+                    onIsFollowedClick(model)
                 }
             }
         }
@@ -109,20 +109,20 @@ private fun SubsInfo(countString: String, name: String) {
 
 @Composable
 private fun BodyCard(
-    isFollowed: Boolean,
+    model: InstagramModel,
     clickListener: () -> Unit
 ) {
     Column {
         Text(
-            text = "Instagram",
+            text = "Instagram ${model.id}",
             fontFamily = FontFamily.Cursive,
             fontSize = 36.sp
         )
         Text(
-            text = "#YoursToMake"
+            text = "#${model.title}"
         )
         Text(text = "www.facebook.com")
-        FollowButton(isFollowed = isFollowed) {
+        FollowButton(isFollowed = model.isFollowed) {
             clickListener()
         }
     }
