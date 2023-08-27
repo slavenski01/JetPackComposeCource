@@ -3,6 +3,7 @@ package com.example.jetpackcomposecource.domain
 import com.example.jetpackcomposecource.R
 
 data class FeedNews(
+    val id: Int,
     val communityName: String = "slavenskiHub",
     val publicationDate: String = "15:00",
     val avatarResId: Int = R.drawable.ic_instagram_logo,

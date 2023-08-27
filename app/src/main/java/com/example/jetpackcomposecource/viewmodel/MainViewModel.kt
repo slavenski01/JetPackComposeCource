@@ -45,20 +45,44 @@ class MainViewModel : ViewModel() {
         _models.value = modifiedList
     }
 
-    private val _feedNews = MutableLiveData(FeedNews())
-    val feedNews: LiveData<FeedNews> = _feedNews
+    private val mockFeeds = mutableListOf<FeedNews>().apply {
+        repeat(500) {
+            add(FeedNews(it))
+        }
+    }
 
-    fun updateCount(item: StatisticItem) {
-        val oldStatistic = feedNews.value?.statistics ?: throw IllegalStateException()
-        val newStatistic = oldStatistic.toMutableStateList().apply {
-            replaceAll { oldItem ->
-                if (oldItem.type == item.type) {
-                    oldItem.copy(count = oldItem.count + 1)
-                } else {
-                    oldItem
+    private val _feedNews = MutableLiveData(mockFeeds.toList())
+    val feedNews: LiveData<List<FeedNews>> = _feedNews
+
+    fun updateVkStatCount(item: FeedNews, statisticItem: StatisticItem) {
+        val newListFeeds =
+            _feedNews.value?.toMutableStateList() ?: throw java.lang.IllegalStateException()
+
+        newListFeeds.replaceAll {
+            if (it == item) {
+                val newStats = it.statistics.toMutableStateList()
+                newStats.replaceAll { stat ->
+                    if (stat == statisticItem) {
+                        val newStat = stat.copy(count = stat.count + 1)
+                        newStat
+                    } else {
+                        stat
+                    }
                 }
+                it.copy(statistics = newStats)
+            } else {
+                it
             }
         }
-        _feedNews.value = feedNews.value?.copy(statistics = newStatistic)
+        _feedNews.value = newListFeeds
+    }
+
+    fun removeVkItem(item: FeedNews) {
+        val newFeeds =
+            _feedNews.value?.toMutableStateList() ?: throw java.lang.IllegalStateException()
+        newFeeds.apply {
+            remove(item)
+        }
+        _feedNews.value = newFeeds
     }
 }

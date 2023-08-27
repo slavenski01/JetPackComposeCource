@@ -28,14 +28,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcomposecource.R
 import com.example.jetpackcomposecource.domain.FeedNews
 import com.example.jetpackcomposecource.domain.StatisticItem
 import com.example.jetpackcomposecource.domain.StatisticType
-import com.example.jetpackcomposecource.ui.theme.JetPackComposeCourceTheme
 
 @Composable
 fun VKCard(
@@ -116,7 +114,7 @@ private fun VKHeader(
 private fun VKBody(feedNews: FeedNews) {
     Column(modifier = Modifier.padding(all = 8.dp)) {
         Text(
-            text = feedNews.contentText,
+            text = "text from ${feedNews.id}: ${feedNews.contentText}",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold
         )
