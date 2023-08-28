@@ -44,8 +44,6 @@ fun VKCard(
     onLikeClickListener: (StatisticItem) -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .padding(8.dp),
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.background
         ),

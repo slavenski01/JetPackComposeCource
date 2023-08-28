@@ -46,7 +46,7 @@ class MainViewModel : ViewModel() {
     }
 
     private val mockFeeds = mutableListOf<FeedNews>().apply {
-        repeat(500) {
+        repeat(10) {
             add(FeedNews(it))
         }
     }
